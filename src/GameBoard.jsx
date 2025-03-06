@@ -3,14 +3,12 @@ import ScoreBoard from "./ScoreBoard"
 import './GameBoard.css'
 
 const width = 8
-const size = width * width
 
 import reptile from './assets/characters/reptile.gif'
 import rain from './assets/characters/rain.gif'
 import scorpion from './assets/characters/scorpion.gif'
 import ermac from './assets/characters/ermac.gif'
 import subzero from './assets/characters/subzero.gif'
-
 
 const yobls = [
     reptile, rain, scorpion, ermac, subzero
@@ -22,8 +20,6 @@ const GameBoard = () => {
     const [squareBeingDragged, setSquareBeingDragged] = useState(null)
     const [squareBeingReplaced, setSquareBeingReplaced] = useState(null)
     const [scoreDisplay, setScoreDisplay] = useState(0)
-    // const squareBeingDragged = useRef(null)
-    // const squareBeingReplaced = useRef(null)
 
 
     // Filling the main board with random yobls
@@ -40,7 +36,7 @@ const GameBoard = () => {
 
     //Check for N matches by vertical
     const checkForColumnOfN = (number) => {
-        const numShouldCheckIndexes = size - width * (number - 1) - 1
+        const numShouldCheckIndexes = width * width - width * (number - 1) - 1
         for (let i = 0; i <= numShouldCheckIndexes; i++) {
             const columnOfFour = []
             for (let j = 0; j < number; j++) {
@@ -59,7 +55,7 @@ const GameBoard = () => {
         }
     }
 
-    //Check for 4 matches by horizontal
+    //Check for N matches by horizontal
     const checkForRowOfN = (number) => {
         for (let i = 0; i <= 63; i++) {
             const rowOfFour = []
@@ -89,93 +85,6 @@ const GameBoard = () => {
         }
     }
 
-    //Check for 4 matches by vertical
-    const checkForColumnOfFour = () => {
-        for (let i = 0; i <= 39; i++) {
-            const columnOfFour = [i, i + width, i + width * 2, i + width * 3]
-            const decidedYiblo = currentYibloArrangement[i]
-            const isBlank = currentYibloArrangement[i] === null
-
-            if (columnOfFour.every(square => currentYibloArrangement[square] === decidedYiblo && !isBlank)) {
-                setScoreDisplay((score) => score + 4)
-                columnOfFour.forEach(square => currentYibloArrangement[square] = null)
-                return true
-            }
-            // return false
-        }
-    }
-
-    //Check for 3 matches by vertical
-    const checkForColumnOfThree = () => {
-        for (let i = 0; i <= 47; i++) {
-            const columnOfThree = [i, i + width, i + width * 2]
-            const decidedYiblo = currentYibloArrangement[i]
-            const isBlank = currentYibloArrangement[i] === null
-
-            if (columnOfThree.every(square => currentYibloArrangement[square] === decidedYiblo && !isBlank)) {
-                setScoreDisplay((score) => score + 3)
-                columnOfThree.forEach(square => currentYibloArrangement[square] = null)
-                return true
-            }
-            // return false
-        }
-    }
-
-
-    //Check for 4 matches by horizontal
-    const checkForRowOfFour = () => {
-        for (let i = 0; i <= 63; i++) {
-            const rowOfFour = [i, i + 1, i + 2, i + 3]
-            const decidedYiblo = currentYibloArrangement[i]
-            const isBlank = currentYibloArrangement[i] === null
-            const notValid =
-                [5, 6, 7,
-                    13, 14, 15,
-                    21, 22, 23,
-                    29, 30, 31,
-                    37, 38, 39,
-                    45, 46, 47,
-                    53, 54, 55,
-                    61, 62, 63]
-
-            if (notValid.includes(i)) continue
-
-            if (rowOfFour.every(square => currentYibloArrangement[square] === decidedYiblo && !isBlank)) {
-                setScoreDisplay((score) => score + 4)
-                rowOfFour.forEach(square => currentYibloArrangement[square] = null)
-                return true
-            }
-            // return false
-        }
-    }
-
-    //Check for 3 matches by horizontal
-    const checkForRowOfThree = () => {
-        for (let i = 0; i <= 63; i++) {
-            const rowOfThree = [i, i + 1, i + 2]
-            const decidedYiblo = currentYibloArrangement[i]
-            const isBlank = currentYibloArrangement[i] === null
-            const notValid =
-                [6, 7,
-                    14, 15,
-                    22, 23,
-                    30, 31,
-                    38, 39,
-                    46, 47,
-                    54, 55,
-                    62, 63]
-
-            if (notValid.includes(i)) continue
-
-            if (rowOfThree.every(square => currentYibloArrangement[square] === decidedYiblo && !isBlank)) {
-                setScoreDisplay((score) => score + 3)
-                rowOfThree.forEach(square => currentYibloArrangement[square] = null)
-                return true
-            }
-            // return false
-        }
-    }
-
     //Makes yobls fall down if there is a space below
     //Then generates new yobls on empty spaces
     const moveIntoSquareBelow = () => {
@@ -189,9 +98,9 @@ const GameBoard = () => {
             }
 
             if (currentYibloArrangement[i + width] === null) {
-                // [currentYibloArrangement[i + width]] = [currentYibloArrangement[i]]
-                currentYibloArrangement[i + width] = currentYibloArrangement[i]
-                currentYibloArrangement[i] = null
+                // currentYibloArrangement[i + width] = currentYibloArrangement[i];
+                // currentYibloArrangement[i] = null;
+                [currentYibloArrangement[i + width], currentYibloArrangement[i]] = [currentYibloArrangement[i], currentYibloArrangement[i + width]];
             }
         }
     }
@@ -203,22 +112,6 @@ const GameBoard = () => {
 
 
     // Check board for every 100ms
-    // useEffect(() => {
-    //     const timer = setInterval(() => {
-    //         checkForColumnOfFour()
-    //         checkForRowOfFour()
-    //         checkForColumnOfThree()
-    //         checkForRowOfThree()
-    //         moveIntoSquareBelow()
-    //         setCurrentYibloArrangement([...currentYibloArrangement])
-    //         // console.log(currentYibloArrangement)
-    //         // console.log(scoreDisplay)
-    //     }, 100)
-    //     return () => clearInterval(timer)
-
-
-    // }, [checkForColumnOfFour, checkForRowOfFour, checkForColumnOfThree, checkForRowOfThree, moveIntoSquareBelow, currentYibloArrangement])
-
     useEffect(() => {
         const timer = setInterval(() => {
             for (let i = width; i > 2; i--) {
@@ -275,12 +168,6 @@ const GameBoard = () => {
 
         const isValidMove = validMoves.includes(squareBeingReplacedId)
 
-        // const columnOfFour = checkForColumnOfFour()
-        // const rowOfFour = checkForRowOfFour()
-        // const columnOfThree = checkForColumnOfThree()
-        // const forRowOfThree = checkForRowOfThree()
-
-
         //replace elements if condition is correct
         if (squareBeingReplacedId && isValidMove) {
             const newYibloArrangement = [...currentYibloArrangement];
@@ -313,26 +200,26 @@ const GameBoard = () => {
     }
 
     // Image constructor
-    function Tile({ image, index }) {
-        return (
-            <img
-                key={index}
-                src={image}
-                alt="ha ha loh"
-                data-id={index}
-                draggable={true}
-                onDragStart={dragStart}
-                onDragOver={(e) => e.preventDefault()}
-                onDragEnter={(e) => e.preventDefault()}
-                onDragLeave={(e) => e.preventDefault()}
-                onDrop={dragDrop}
-                onDragEnd={dragEnd}
-                style={{
-                    borderRadius: "50px"
-                }}
-            ></img>
-        )
-    }
+    // function Tile({ image, index }) {
+    //     return (
+    //         <img
+    //             key={index}
+    //             src={image}
+    //             alt="ha ha loh"
+    //             data-id={index}
+    //             draggable={true}
+    //             onDragStart={dragStart}
+    //             onDragOver={(e) => e.preventDefault()}
+    //             onDragEnter={(e) => e.preventDefault()}
+    //             onDragLeave={(e) => e.preventDefault()}
+    //             onDrop={dragDrop}
+    //             onDragEnd={dragEnd}
+    //             style={{
+    //                 borderRadius: "50px"
+    //             }}
+    //         ></img>
+    //     )
+    // }
 
     //creating a game window
     return (
