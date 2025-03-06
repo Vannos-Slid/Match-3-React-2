@@ -1,0 +1,10 @@
+body {
+  background-image: url('./assets/background/temple.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#root {
+  margin: 0 auto;
+}
